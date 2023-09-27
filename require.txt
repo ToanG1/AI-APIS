@@ -1,0 +1,2 @@
+python_ver = 3.9.1
+claude_api = 1.0.17
