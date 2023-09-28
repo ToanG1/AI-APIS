@@ -20,14 +20,14 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in allowedTypes
 
 # Routes
-@app.route('/init', methods=['GET'])
+@app.route('/api2/init', methods=['GET'])
 def init():
     try:
         return jsonpickle.encode(claude.initNewChat())
     except:
         return jsonpickle.encode(openAI.initNewChat())
 
-@app.route('/chat', methods=['POST'])
+@app.route('/api2/chat', methods=['POST'])
 def chat():
     try:
         if (request.get_json()['c_id']):
@@ -43,7 +43,7 @@ def chat():
         return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
                                                messages=[], prompt= "", response= ""))
 
-@app.route('/file', methods=['POST'])
+@app.route('/api2/file', methods=['POST'])
 def chatWithAttachment(): 
     try:
         if 'file' in request.files and request.form.get("c_id") and request.form.get("prompt"):
