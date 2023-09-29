@@ -1,5 +1,7 @@
 python_ver = 3.9.1
 claude_api = 1.0.17 (encoding= 'utf-8'(win) to 'iso-8859-1'(mac))
+    add to claude_api lib 
+    tika = 2.6.0
 openai = 0.28.1 
 tqdm = 4.66.1
 typing = 3.7.4.3

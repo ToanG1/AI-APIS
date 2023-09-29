@@ -14,7 +14,7 @@ app.config['MAX_CONTENT_LENGTH'] = 2 * 1000 * 1000
 app.config['UPLOAD_FOLDER'] = '/Users/toan/Documents/TLCN/BE/claudeS/files'
 
 # File types that are accepted to use claude with attachment
-allowedTypes = {"txt"}
+allowedTypes = {"docx", "txt", "pdf", "csv"}
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in allowedTypes
@@ -45,7 +45,7 @@ def chat():
 
 @app.route('/api2/file', methods=['POST'])
 def chatWithAttachment(): 
-    try:
+    # try:
         if 'file' in request.files and request.form.get("c_id") and request.form.get("prompt"):
             file = request.files['file']
             if file or file.filename == '':
@@ -60,6 +60,6 @@ def chatWithAttachment():
                 
         return jsonpickle.encode(chatResponse(code = 400, message ="No selected file!", c_id= "",
                                                 messages=[], prompt= "", response= ""))
-    except:
-        return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
-                                               messages=[], prompt= "", response= ""))
+    # except:
+    #     return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
+    #                                            messages=[], prompt= "", response= ""))
