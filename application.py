@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 # Limit content lenght to 2mb
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1000 * 1000
-app.config['UPLOAD_FOLDER'] = '/Users/toan/Documents/TLCN/BE/claudeS/files'
+app.config['UPLOAD_FOLDER'] = './files'
 
 # File types that are accepted to use claude with attachment
 allowedTypes = {"docx", "txt", "pdf", "csv"}
@@ -63,3 +63,6 @@ def chatWithAttachment():
     # except:
     #     return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
     #                                            messages=[], prompt= "", response= ""))
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0")

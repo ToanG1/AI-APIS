@@ -1,0 +1,8 @@
+version: "3.9.18"
+
+services:
+  application:
+    image: ai-apis/python:v1
+    ports:
+      - "5001:5001"
+    restart: unless-stopped

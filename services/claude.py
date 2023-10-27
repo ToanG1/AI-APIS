@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from claude_api import Client
+from package.claude_api import Client
 from models.chatResponse import chatResponse
 
 load_dotenv()

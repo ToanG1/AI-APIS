@@ -1,0 +1,13 @@
+Flask==2.2.5
+tika==2.6.0
+openai==0.28.1 
+tqdm==4.66.1
+typing==3.7.4.3
+jsonpickle==3.0.2
+werkzeug==2.3.4
+MarkupSafe==2.1.1
+python-dotenv==1.0.0
+curl_cffi==0.5.7
+requests==2.27.1
+wheel==0.37.1
+python-docx==0.8.11
