@@ -14,7 +14,7 @@ app.config['MAX_CONTENT_LENGTH'] = 2 * 1000 * 1000
 app.config['UPLOAD_FOLDER'] = './files'
 
 # File types that are accepted to use claude with attachment
-allowedTypes = {"docx", "txt", "pdf", "csv"}
+allowedTypes = {"docx", "doc", "txt", "pdf", "csv", "html", "jpg", "jpeg", "png"}
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in allowedTypes
@@ -45,7 +45,7 @@ def chat():
 
 @app.route('/api2/file', methods=['POST'])
 def chatWithAttachment(): 
-    # try:
+    try:
         if 'file' in request.files and request.form.get("c_id") and request.form.get("prompt"):
             file = request.files['file']
             if file or file.filename == '':
@@ -60,9 +60,12 @@ def chatWithAttachment():
                 
         return jsonpickle.encode(chatResponse(code = 400, message ="No selected file!", c_id= "",
                                                 messages=[], prompt= "", response= ""))
-    # except:
-    #     return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
+    except JSONDecodeError:
+        return jsonpickle.encode(chatResponse(code = 400, message ="Key reached limit", c_id= "",
+                                               messages=[], prompt= "", response= ""))
+    # except :
+    #     return jsonpickle.encode(chatResponse(code = 400, message ="Somethings wrong", c_id= "",
     #                                            messages=[], prompt= "", response= ""))
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0", port=5002)

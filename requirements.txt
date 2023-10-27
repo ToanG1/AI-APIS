@@ -1,5 +1,4 @@
 Flask==2.2.5
-tika==2.6.0
 openai==0.28.1 
 tqdm==4.66.1
 typing==3.7.4.3
@@ -10,4 +9,4 @@ python-dotenv==1.0.0
 curl_cffi==0.5.7
 requests==2.27.1
 wheel==0.37.1
-python-docx==0.8.11
+textract==1.6.5

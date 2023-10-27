@@ -21,6 +21,5 @@ def chat(prompt, conversation_id):
 # Accept only txt file
 def chatWithAttachment(prompt, file, conversation_id):
     response = claude_api.send_message(prompt, conversation_id, attachment= file, timeout=600)
-    print(response)
     return chatResponse(code = 200, message ="Chat request are served successfully", c_id = conversation_id,
                          messages = [], prompt = prompt, response = response)

@@ -4,9 +4,9 @@ import uuid
 from curl_cffi import requests
 import requests as req
 import re
-from tika import parser
 import csv
-import docx
+import textract
+from services.blip import query
 
 class Client:
 
@@ -45,7 +45,13 @@ class Client:
       return 'text/plain'
     elif extension == '.csv':
       return 'text/csv'
-    elif extension == '.docx':
+    elif extension == '.html':
+      return 'text/html'
+    elif extension == '.jpg' or extension == '.jpeg':
+      return 'image/jpeg'
+    elif extension == '.png':
+      return 'image/png'
+    elif extension == '.docx' or extension == '.doc':
       return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     # Add more content types as needed for other file types
     else:
@@ -160,7 +166,7 @@ class Client:
         'TE': 'trailers'
     }
 
-    response = requests.delete( url, headers=headers, data=payload,impersonate="chrome110")
+    response = requests.delete( url, headers=headers, data=payload,impersonate="chrome110" )
 
     # Returns True if deleted or False if any error in deleting
     if response.status_code == 204:
@@ -238,26 +244,24 @@ class Client:
       file_name = os.path.basename(file_path)
       file_size = os.path.getsize(file_path)
       file_type = "text/plain"
-      file_content = parser.from_file(file_path)['content']
+      file_content = textract.process(file_path, method='pdfminer')
 
       return {
           "file_name": file_name,
           "file_type": file_type,
           "file_size": file_size,
-          "extracted_content": file_content
+          "extracted_content": file_content.decode('utf-8')
       }
     if file_path.endswith('.txt'):
       file_name = os.path.basename(file_path)
       file_size = os.path.getsize(file_path)
       file_type = "text/plain"
-      with open(file_path, 'r', encoding='utf-8') as file:
-        file_content = file.read()
-
+      file_content = textract.process(file_path)
       return {
           "file_name": file_name,
           "file_type": file_type,
           "file_size": file_size,
-          "extracted_content": file_content
+          "extracted_content": file_content.decode('utf-8')
       }
     
     if file_path.endswith('.csv'):
@@ -282,18 +286,52 @@ class Client:
       file_name = os.path.basename(file_path)
       file_size = os.path.getsize(file_path)
       file_type = "text/plain"
-
-      doc = docx.Document(file_path)
-      text = ""
-      for paragraph in doc.paragraphs:
-        text += paragraph.text + "\n"
-        file_content = text
+      file_content = textract.process(file_path)
 
       return {
           "file_name": file_name,
           "file_type": file_type,
           "file_size": file_size,
-          "extracted_content": file_content
+          "extracted_content": file_content.decode('utf-8')
+      }
+    if file_path.endswith('.doc'):
+      file_name = os.path.basename(file_path)
+      file_size = os.path.getsize(file_path)
+      file_type = "text/plain"
+      file_content = textract.process(file_path)
+
+      return {
+          "file_name": file_name,
+          "file_type": file_type,
+          "file_size": file_size,
+          "extracted_content": file_content.decode('utf-8')
+      }
+    
+    if file_path.endswith('.html'):
+      file_name = os.path.basename(file_path)
+      file_size = os.path.getsize(file_path)
+      file_type = "text/html"
+      file_content = textract.process(file_path)
+
+      return {
+          "file_name": file_name,
+          "file_type": file_type,
+          "file_size": file_size,
+          "extracted_content": file_content.decode('utf-8')
+      }
+    
+    if file_path.endswith('.jpg') or file_path.endswith('.jpeg') or file_path.endswith('.png'):
+      file_name = os.path.basename(file_path)
+      file_size = os.path.getsize(file_path)
+      file_type = "text/plain"
+
+      file_content = query(file_path)
+      
+      return {
+          "file_name": file_name,
+          "file_type": file_type,
+          "file_size": file_size,
+          "extracted_content": file_content[0].get("generated_text")
       }
     
     url = 'https://claude.ai/api/convert_document'
