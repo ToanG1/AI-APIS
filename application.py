@@ -6,8 +6,11 @@ from services import claude, openAI
 from models.chatResponse import chatResponse
 import jsonpickle
 from werkzeug.utils import secure_filename
+from flask_cors import CORS
 
 app = Flask(__name__)
+# cors = CORS(app, resources={r"/api2/*": {"origins": ["http://localhost:3000", "http://localhost:5001"]}})
+CORS(app)
 
 # Limit content lenght to 2mb
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1000 * 1000
@@ -63,9 +66,18 @@ def chatWithAttachment():
     except JSONDecodeError:
         return jsonpickle.encode(chatResponse(code = 400, message ="Key reached limit", c_id= "",
                                                messages=[], prompt= "", response= ""))
-    # except :
-    #     return jsonpickle.encode(chatResponse(code = 400, message ="Somethings wrong", c_id= "",
-    #                                            messages=[], prompt= "", response= ""))
+    except :
+        return jsonpickle.encode(chatResponse(code = 400, message ="Somethings wrong", c_id= "",
+                                               messages=[], prompt= "", response= ""))
+
+@app.route('/api2/gen', methods=['POST'])
+def genRoadmap(): 
+    try:
+        return jsonpickle.encode(openAI.genRoadmap(request.get_json()['topic'], request.get_json()['level'], request.get_json()['language']))
+    except:
+        return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
+                                               messages=[], prompt= "", response= ""))
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5002)
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=5002)

@@ -10,3 +10,5 @@ curl_cffi==0.5.7
 requests==2.27.1
 wheel==0.37.1
 textract==1.6.5
+flask-cors==4.0.0
+waitress==2.1.2
