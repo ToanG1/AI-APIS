@@ -15,26 +15,42 @@ class Client:
     self.organization_id = self.get_organization_id()
 
   def get_organization_id(self):
-    url = "https://claude.ai/api/organizations"
 
-    headers = {
-        'User-Agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Referer': 'https://claude.ai/chats',
-        'Content-Type': 'application/json',
-        'Sec-Fetch-Dest': 'empty',
-        'Sec-Fetch-Mode': 'cors',
-        'Sec-Fetch-Site': 'same-origin',
-        'Connection': 'keep-alive',
-        'Cookie': f'{self.cookie}'
+        
+    BASE_URL = "https://claude.ai"
+    API_ENDPOINT = "/api/organizations"
+    API_KEY = self.cookie
+
+    HEADERS = {
+      "Content-Type": "application/json",
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0",
+      "Authority": "claude.ai",  
+      "Accept": "*/*",
+      "Accept-Language": "en-US,en;q=0.9",
+      "DNT": "1",
+      "Sec-Fetch-Dest": "empty",
+      "Sec-Fetch-Mode": "navigate",
+      "Sec-Fetch-Site": "same-origin",
+      "Upgrade-Insecure-Requests": "1",
+      "Connection": "keep-alive"  
     }
 
-    response = requests.get(url, headers=headers,impersonate="chrome110")
-    res = json.loads(response.text)
-    uuid = res[0]['uuid']
+    url = BASE_URL + API_ENDPOINT
 
-    return uuid
+    headers = HEADERS.copy()
+    headers["Cookie"] = f"sessionKey={API_KEY}"
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+          
+          orgs = response.json()
+
+          for org in orgs:
+                return org["uuid"]
+      
+          else:
+                print("Error:", response.text)
 
   def get_content_type(self, file_path):
     # Function to determine content type based on file extension
