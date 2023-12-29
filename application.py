@@ -1,5 +1,4 @@
 from json import JSONDecodeError
-from uu import encode
 import os
 from flask import Flask, request
 from services import claude, openAI
@@ -78,6 +77,14 @@ def genRoadmap():
         return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
                                                messages=[], prompt= "", response= ""))
 
+@app.route('/api/suggest', methods=['POST'])
+def getSuggestion(): 
+    try:
+        return jsonpickle.encode(openAI.getSuggestion(request.get_json()['topic'], request.get_json()['content'], request.get_json()['language']))
+    except:
+        return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
+                                               messages=[], prompt= "", response= ""))
+
 if __name__ == "__main__":
     from waitress import serve
-    serve(app, host="0.0.0.0", port=5002)
+    serve(app, host="0.0.0.0", port=5002, threads=1000)

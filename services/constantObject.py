@@ -4,25 +4,25 @@ roadmapObject = """{
     title: "Title of roadmap in text",
     milestones: [
         {
+        id: 0,
         name: "milestone 1",
         content: [
             {
+            id: 0,
             name: "title of content 1",
             description: [
                 "information",
                 "information",
                 "information",
+                "more information"
             ],
+            estimatedTime: 0 (Estimated hour to finish this content),
+            totalTime: 0 (Dont change this),
+            countFrom: "0001-01-01T00:00:00Z"
             },
-            {
-            name: "title of content 2",
-            description: [
-                "information",
-                "information",
-                "information",
-            ],
-            },
+            (give me as much as you can but limited is 5)
             ]
-        },
+        },give me as much as you can)
+        ()
     ]
     }"""
