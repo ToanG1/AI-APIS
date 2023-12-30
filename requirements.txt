@@ -12,3 +12,4 @@ wheel==0.37.1
 textract==1.6.5
 flask-cors==4.0.0
 waitress==2.1.2
+youtube-transcript-api==0.6.2

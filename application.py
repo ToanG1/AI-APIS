@@ -1,7 +1,8 @@
+from crypt import methods
 from json import JSONDecodeError
 import os
 from flask import Flask, request
-from services import claude, openAI
+from services import claude, openAI, youtube
 from models.chatResponse import chatResponse
 import jsonpickle
 from werkzeug.utils import secure_filename
@@ -84,6 +85,24 @@ def getSuggestion():
     except:
         return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
                                                messages=[], prompt= "", response= ""))
+
+@app.route('/api/subtitle', methods=['GET'])
+def getSubtitles():
+    try:
+        return jsonpickle.encode(youtube.getYoutubeSubtitles(request.args.get('videoId')))
+    except:
+        return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
+                                               messages=[], prompt= "", response= ""))
+
+
+@app.route('/api/summarize', methods=['POST'])
+def summarizeDocument():
+    try:
+        return jsonpickle.encode(openAI.summarize(request.get_json()['document']))
+    except:
+        return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
+                                               messages=[], prompt= "", response= ""))
+    
 
 if __name__ == "__main__":
     from waitress import serve
