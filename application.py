@@ -1,8 +1,8 @@
-from crypt import methods
+# from crypt import methods
 from json import JSONDecodeError
 import os
 from flask import Flask, request
-from services import claude, openAI, youtube
+from services import claude, openAI, youtube, textModeration
 from models.chatResponse import chatResponse
 import jsonpickle
 from werkzeug.utils import secure_filename
@@ -94,7 +94,6 @@ def getSubtitles():
         return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
                                                messages=[], prompt= "", response= ""))
 
-
 @app.route('/api/summarize', methods=['POST'])
 def summarizeDocument():
     try:
@@ -103,6 +102,17 @@ def summarizeDocument():
         return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
                                                messages=[], prompt= "", response= ""))
     
+@app.route('/api/checkModeration', methods=['POST'])
+def checkModeration():
+    priority = request.args.get('priority')
+    if (priority == "high"):
+        return jsonpickle.encode(
+            textModeration.
+            checkModerationHighPriority(request.get_json()['content']))
+    else:
+        return jsonpickle.encode(
+            textModeration.
+            checkModerationLowPriority(request.get_json()['content']))
 
 if __name__ == "__main__":
     from waitress import serve

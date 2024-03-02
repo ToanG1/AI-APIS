@@ -1,7 +1,6 @@
 from email import message
 import os
 import string
-from dotenv import load_dotenv
 import openai
 from models.chatResponse import chatResponse
 from services.constantObject import roadmapObject
