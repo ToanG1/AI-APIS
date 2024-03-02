@@ -19,7 +19,7 @@ def checkModerationLowPriority(content):
     print(moderationRate)
     if (moderationRate <= ACCEPTANCE_NSFW_SCORE):
         return moderationResponse(code= 200, 
-            message= 'Content does not violated Community Standard', isViolated= False,
+            message= 'Content does not violate Community Standard', isViolated= False,
             isBanned= False, reproducedContent= censorModeratingContent(content), reason= '')
     
     elif (moderationRate <= BANNED_NSFW_SCORE):
@@ -61,7 +61,7 @@ def checkModerationHighPriority(content):
     if (paidAuthorNSFWScore <= ACCEPTANCE_NSFW_SCORE
             and freeAuthorNSFWScore <= ACCEPTANCE_NSFW_SCORE):
         return moderationResponse(code= 200, 
-            message= 'Content does not violated Community Standard', isViolated= False, 
+            message= 'Content does not violate Community Standard', isViolated= False, 
             isBanned= False, reproducedContent= '', reason= '')
         
     elif (paidAuthorNSFWScore <= BANNED_NSFW_SCORE 

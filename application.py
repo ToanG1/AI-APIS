@@ -2,7 +2,7 @@
 from json import JSONDecodeError
 import os
 from flask import Flask, request
-from services import claude, openAI, youtube, textModeration
+from services import claude, openAI, youtube, textModeration, imageModeration
 from models.chatResponse import chatResponse
 import jsonpickle
 from werkzeug.utils import secure_filename
@@ -105,14 +105,21 @@ def summarizeDocument():
 @app.route('/api/checkModeration', methods=['POST'])
 def checkModeration():
     priority = request.args.get('priority')
-    if (priority == "high"):
+    type = request.args.get('type')
+    if (type == "image"):
         return jsonpickle.encode(
-            textModeration.
-            checkModerationHighPriority(request.get_json()['content']))
-    else:
-        return jsonpickle.encode(
-            textModeration.
-            checkModerationLowPriority(request.get_json()['content']))
+        imageModeration.
+        checkImageModeration(request.get_json()['content']))
+    
+    elif (type == "text"):
+        if (priority == "high"):
+            return jsonpickle.encode(
+                textModeration.
+                checkModerationHighPriority(request.get_json()['content']))
+        else:
+            return jsonpickle.encode(
+                textModeration.
+                checkModerationLowPriority(request.get_json()['content']))
 
 if __name__ == "__main__":
     from waitress import serve
