@@ -102,7 +102,7 @@ def summarizeDocument():
         return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
                                                messages=[], prompt= "", response= ""))
     
-@app.route('/api/checkModeration', methods=['POST'])
+@app.route('/api/check-nsfw', methods=['POST'])
 def checkModeration():
     priority = request.args.get('priority')
     type = request.args.get('type')
