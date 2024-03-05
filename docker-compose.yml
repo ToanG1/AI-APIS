@@ -4,5 +4,5 @@ services:
   application:
     image: ai-apis/python:v1
     ports:
-      - "5002:5002"
+      - "5009:5009"
     restart: unless-stopped
