@@ -4,7 +4,9 @@ import string
 import openai
 from models.chatResponse import chatResponse
 from services.constantObject import roadmapObject
+from dotenv import load_dotenv
 
+load_dotenv()
 openai.api_key = os.getenv('GPTKEY')
 
 def initNewChat():
