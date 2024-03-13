@@ -4,10 +4,11 @@ from better_profanity import profanity
 import json
 import requests
 import os
-
+from dotenv import load_dotenv
 from models.moderationResponse import moderationResponse
 
 profanity.load_censor_words()
+load_dotenv()
 
 edenKey = os.getenv('EDEN_KEY')
 
@@ -33,6 +34,7 @@ def checkModerationLowPriority(content):
             isBanned= True, reproducedContent= '', reason= 'Reach our limit of Community Standard')
 
 def checkModerationHighPriority(content):
+    print(edenKey)
     headers = {"Authorization": "Bearer " + edenKey}
     url = "https://api.edenai.run/v2/text/moderation"
     
