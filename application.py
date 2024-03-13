@@ -1,8 +1,9 @@
 #from crypt import methods
+# from crypt import methods
 from json import JSONDecodeError
 import os
 from flask import Flask, request
-from services import claude, openAI, youtube
+from services import openAI, youtube, textModeration, imageModeration
 from models.chatResponse import chatResponse
 import jsonpickle
 from werkzeug.utils import secure_filename
@@ -25,17 +26,12 @@ def allowed_file(filename):
 # Routes
 @app.route('/api/init', methods=['GET'])
 def init():
-    try:
-        return jsonpickle.encode(claude.initNewChat())
-    except:
-        return jsonpickle.encode(openAI.initNewChat())
+    return jsonpickle.encode(openAI.initNewChat())
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
     try:
-        if (request.get_json()['c_id']):
-            return jsonpickle.encode(claude.chat(request.get_json()['prompt'], request.get_json()['c_id']))
-        elif (request.get_json()['messages']):
+        if (request.get_json()['messages']):
             return jsonpickle.encode(openAI.chat(request.get_json()['prompt'], request.get_json()['messages']))
         else :
             return jsonpickle.encode(chatResponse(code = 400, message ="Id and messages are required! Init new chat first",
@@ -44,30 +40,6 @@ def chat():
         return jsonpickle.encode(openAI.chat(request.get_json()['prompt'], openAI.initNewChat()))
     except:
         return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
-                                               messages=[], prompt= "", response= ""))
-
-@app.route('/api/file', methods=['POST'])
-def chatWithAttachment(): 
-    try:
-        if 'file' in request.files and request.form.get("c_id") and request.form.get("prompt"):
-            file = request.files['file']
-            if file or file.filename == '':
-                if allowed_file(file.filename):
-                    filename = secure_filename(file.filename)
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                    return jsonpickle.encode(claude.chatWithAttachment(request.form.get("prompt"),
-                                                os.path.join(app.config['UPLOAD_FOLDER'], filename), request.form.get("c_id")))
-                else:
-                    return jsonpickle.encode(chatResponse(code = 400, message ="Media file are not supported", c_id= "",
-                                                messages=[], prompt= "", response= ""))
-                
-        return jsonpickle.encode(chatResponse(code = 400, message ="No selected file!", c_id= "",
-                                                messages=[], prompt= "", response= ""))
-    except JSONDecodeError:
-        return jsonpickle.encode(chatResponse(code = 400, message ="Key reached limit", c_id= "",
-                                               messages=[], prompt= "", response= ""))
-    except :
-        return jsonpickle.encode(chatResponse(code = 400, message ="Somethings wrong", c_id= "",
                                                messages=[], prompt= "", response= ""))
 
 @app.route('/api/gen', methods=['POST'])
@@ -94,7 +66,6 @@ def getSubtitles():
         return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
                                                messages=[], prompt= "", response= ""))
 
-
 @app.route('/api/summarize', methods=['POST'])
 def summarizeDocument():
     try:
@@ -103,7 +74,25 @@ def summarizeDocument():
         return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
                                                messages=[], prompt= "", response= ""))
     
+@app.route('/api/check-nsfw', methods=['POST'])
+def checkModeration():
+    priority = request.args.get('priority')
+    type = request.args.get('type')
+    if (type == "image"):
+        return jsonpickle.encode(
+        imageModeration.
+        checkImageModeration(request.get_json()['content']))
+    
+    elif (type == "text"):
+        if (priority == "high"):
+            return jsonpickle.encode(
+                textModeration.
+                checkModerationHighPriority(request.get_json()['content']))
+        else:
+            return jsonpickle.encode(
+                textModeration.
+                checkModerationLowPriority(request.get_json()['content']))
 
 if __name__ == "__main__":
     from waitress import serve
-    serve(app, host="0.0.0.0", port=5002, threads=1000)
+    serve(app, host="0.0.0.0", port=5009, threads=1000)
