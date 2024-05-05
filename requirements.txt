@@ -10,3 +10,4 @@ Requests==2.31.0
 waitress==2.1.2
 Werkzeug==2.3.4
 youtube_transcript_api==0.6.2
+anthropic==0.25.7

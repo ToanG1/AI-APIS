@@ -2,7 +2,7 @@
 from json import JSONDecodeError
 import os
 from flask import Flask, request
-from services import openAI, youtube, textModeration, imageModeration
+from services import openAI, youtube, textModeration, imageModeration, anthropic
 from models.chatResponse import chatResponse
 import jsonpickle
 from werkzeug.utils import secure_filename
@@ -30,13 +30,7 @@ def init():
 @app.route('/api/chat', methods=['POST'])
 def chat():
     try:
-        if (request.get_json()['messages']):
-            return jsonpickle.encode(openAI.chat(request.get_json()['prompt'], request.get_json()['messages']))
-        else :
-            return jsonpickle.encode(chatResponse(code = 400, message ="Id and messages are required! Init new chat first",
-                                                   c_id= "", messages=[], prompt= "", response= ""))
-    except JSONDecodeError:
-        return jsonpickle.encode(openAI.chat(request.get_json()['prompt'], openAI.initNewChat()))
+            return jsonpickle.encode(anthropic.chat(request.get_json()['prompt'], request.get_json()['messages']))
     except:
         return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
                                                messages=[], prompt= "", response= ""))
