@@ -30,10 +30,19 @@ def init():
 @app.route('/api/chat', methods=['POST'])
 def chat():
     try:
-            return jsonpickle.encode(anthropic.chat(request.get_json()['prompt'], request.get_json()['messages']))
+        return jsonpickle.encode(anthropic.chat(request.get_json()['prompt'], request.get_json()['messages']))
     except:
         return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
                                                messages=[], prompt= "", response= ""))
+
+@app.route('/api/chatWithVision', methods=['POST'])
+def chatWithVision():
+    # try:
+        return jsonpickle.encode(anthropic.chatWithVision(request.get_json()['prompt'], request.args.get('image') , request.get_json()['messages']))
+    # except:
+    #     return jsonpickle.encode(chatResponse(code = 400, message ="Somethings missed or key reached limit", c_id= "",
+    #                                            messages=[], prompt= "", response= ""))
+
 
 @app.route('/api/gen', methods=['POST'])
 def genRoadmap(): 
