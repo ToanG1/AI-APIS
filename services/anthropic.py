@@ -38,12 +38,13 @@ def appendMessage(messages, role, content):
     return messages
 
 def createContentWithImage(content, image):
+    img = httpx.get(image)
     return [{
             "type": "image",
             "source": {
                 "type": "base64",
-                "media_type": "image/jpeg",
-                "data": base64.b64encode(httpx.get(image).content).decode("utf-8"),
+                "media_type": img.headers.get('content-type'),
+                "data": base64.b64encode(img.content).decode("utf-8"),
                 },
             },
             {
