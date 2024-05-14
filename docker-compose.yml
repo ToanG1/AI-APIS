@@ -2,7 +2,7 @@ version: "3.9.18"
 
 services:
   application:
-    image: api4ai/python:v2
+    image: api4ai/python:v3
     env_file: .env
     ports:
       - "5009:5009"
